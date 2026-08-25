@@ -68,6 +68,11 @@ async function atualizar(req, res, next) {
     const { id } = req.params;
     const { nome, telefone, cargoId, ativo, senha, email } = req.body || {};
 
+    // REGRA DE NEGÓCIO: somente ADMIN (cargoId 1) e RH (cargoId 4) podem alterar CARGO
+    if (cargoId !== undefined && !['ADMIN', 'RH'].includes(req.user.cargo)) {
+      return res.status(403).json({ erro: 'Somente o RH ou o Administrador podem definir cargos' });
+    }
+
     const campos = [];
     const valores = [];
     // e-mail: se veio, normaliza e valida (nunca confiar no front)

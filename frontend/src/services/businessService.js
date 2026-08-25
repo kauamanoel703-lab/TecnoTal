@@ -32,3 +32,13 @@ export const financeiroService = {
   registrarVenda: (produtoId, quantidade, precoUnitario, observacao) =>
     api.post('/business/vendas', { produtoId, quantidade, precoUnitario, observacao }),
 };
+
+export const chamadoService = {
+  abrir: (departamento, titulo, descricao, prioridade) =>
+    api.post('/chamados', { departamento, titulo, descricao, prioridade }),
+  listar: (departamento, status) =>
+    api.get('/chamados', { params: { departamento, status } }).then((r) => r.data.chamados),
+  meusSetores: () => api.get('/chamados/meus-setores').then((r) => r.data.setores),
+  assumir: (id) => api.post(`/chamados/${id}/assumir`),
+  resolver: (id, resposta) => api.post(`/chamados/${id}/resolver`, { resposta }),
+};

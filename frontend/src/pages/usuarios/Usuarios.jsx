@@ -3,7 +3,7 @@ import { userService } from '../../services/userService';
 import { maskCpf, maskTelefone } from '../../utils/masks';
 import EditarUsuarioModal from '../../components/users/EditarUsuarioModal';
 
-const CARGOS = [{ id: 1, nome: 'ADMIN' }, { id: 2, nome: 'GESTOR' }, { id: 3, nome: 'USUARIO' }];
+const CARGOS = [{ id: 1, nome: 'ADMIN' }, { id: 2, nome: 'GESTOR' }, { id: 3, nome: 'USUARIO' }, { id: 4, nome: 'RH' }];
 
 export default function Usuarios() {
   const [lista, setLista] = useState(null);
@@ -65,7 +65,10 @@ export default function Usuarios() {
       <h1 className="page-title">Usuários</h1>
       <div className="grid-2">
         <div className="card">
-          <h3 style={{ marginBottom: 14, fontSize: 15 }}>Novo usuário</h3>
+          <h3 style={{ marginBottom: 6, fontSize: 15 }}>Novo usuário</h3>
+          <p style={{ color: 'var(--muted)', fontSize: 11, marginBottom: 10 }}>
+            ⚠️ Definir/trocar cargo é exclusivo de <b style={{ color: 'var(--cyan)' }}>ADMIN</b> e <b style={{ color: 'var(--cyan)' }}>RH</b>.
+          </p>
           {msg && <div style={{ color: 'var(--success)', fontSize: 13, marginBottom: 10 }}>{msg}</div>}
           {erro && <div className="alert-error" style={{ marginBottom: 10 }}>{erro}</div>}
           <form onSubmit={criar} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

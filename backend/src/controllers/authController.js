@@ -17,9 +17,17 @@ async function registrarAtividade(usuarioId, acao, detalhes, ip) {
   );
 }
 
-function gerarToken(user) {
+async function permissoesDoUsuario(cargoId) {
+  const [rows] = await db.execute(
+    'SELECT p.codigo FROM cargo_permissoes cp JOIN permissoes p ON p.id = cp.permissao_id WHERE cp.cargo_id = ?',
+    [cargoId]
+  );
+  return rows.map((r) => r.codigo);
+}
+
+function gerarToken(user, permissoes = []) {
   return jwt.sign(
-    { id: user.id, nome: user.nome, cargo: user.cargo_nome, cargoId: user.cargo_id },
+    { id: user.id, nome: user.nome, cargo: user.cargo_nome, cargoId: user.cargo_id, permissoes },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES || '8h' }
   );
@@ -78,7 +86,8 @@ async function login(req, res, next) {
     }
 
     bloqueio.limpar(email);
-    const token = gerarToken(user);
+    const permissoes = await permissoesDoUsuario(user.cargo_id);
+    const token = gerarToken(user, permissoes);
     res.cookie('token', token, COOKIE_OPTS);
     await registrarAtividade(user.id, 'LOGIN', null, req.ip);
     return res.json({ usuario: sanitizar(user) });

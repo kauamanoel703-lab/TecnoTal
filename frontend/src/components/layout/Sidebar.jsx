@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, CheckSquare, Users, BarChart3,
-  Settings, ShieldCheck, Package, Target, Clock, Banknote, TrendingUp,
+  Settings, ShieldCheck, Package, Target, Clock, Banknote, TrendingUp, LifeBuoy,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { pode } from '../../utils/permissions';
@@ -16,6 +16,7 @@ export default function Sidebar() {
       <div className="brand gradient-text">TecnoTal</div>
       <NavLink to="/" end className={item}><LayoutDashboard size={17}/> Dashboard</NavLink>
       <NavLink to="/ponto" className={item}><Clock size={17}/> Ponto</NavLink>
+      <NavLink to="/chamados" className={item}><LifeBuoy size={17}/> Chamados</NavLink>
       <NavLink to="/produtos" className={item}><Package size={17}/> Produtos</NavLink>
       <NavLink to="/metas" className={item}><Target size={17}/> Metas</NavLink>
       <NavLink to="/solicitacoes" className={item}><ClipboardList size={17}/> Minhas Solicitações</NavLink>

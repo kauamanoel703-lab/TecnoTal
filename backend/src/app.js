@@ -14,6 +14,7 @@ const businessRoutes = require('./routes/businessRoutes');
 const salarioRoutes = require('./routes/salarioRoutes');
 const financeiroRoutes = require('./routes/financeiroRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const chamadoRoutes = require('./routes/chamadoRoutes');
 const exportRoutes = require('./routes/exportRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
@@ -50,6 +51,7 @@ app.use('/api/business', businessRoutes);
 app.use('/api/salarios', salarioRoutes);
 app.use('/api/business', financeiroRoutes);
 app.use('/api', dashboardRoutes);
+app.use('/api/chamados', chamadoRoutes);
 
 // 404 JSON
 app.use((req, res) => res.status(404).json({ erro: 'Rota não encontrada' }));

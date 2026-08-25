@@ -16,6 +16,7 @@ import Metas from '../pages/business/Metas';
 import Ponto from '../pages/business/Ponto';
 import Salarios from '../pages/business/Salarios';
 import Financeiro from '../pages/business/Financeiro';
+import Chamados from '../pages/business/Chamados';
 import { IntranetLayout } from '../layouts/IntranetLayout';
 
 export default function AppRoutes() {
@@ -33,6 +34,7 @@ export default function AppRoutes() {
           <Route path="/produtos" element={<Produtos />} />
           <Route path="/metas" element={<Metas />} />
           <Route path="/ponto" element={<Ponto />} />
+          <Route path="/chamados" element={<Chamados />} />
           <Route
             path="/salarios"
             element={
