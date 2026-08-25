@@ -1,0 +1,104 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const db = require('../database/connection');
+
+const COOKIE_OPTS = {
+  httpOnly: true,
+  sameSite: 'lax',
+  secure: process.env.COOKIE_SECURE === 'true',
+  maxAge: 8 * 60 * 60 * 1000, // 8h
+};
+
+async function registrarAtividade(usuarioId, acao, detalhes, ip) {
+  await db.execute(
+    'INSERT INTO atividades (usuario_id, acao, detalhes, ip) VALUES (?, ?, ?, ?)',
+    [usuarioId || null, acao, detalhes || null, ip || null]
+  );
+}
+
+function gerarToken(user) {
+  return jwt.sign(
+    { id: user.id, nome: user.nome, cargo: user.cargo_nome, cargoId: user.cargo_id },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES || '8h' }
+  );
+}
+
+function sanitizar(u) {
+  return {
+    id: u.id,
+    nome: u.nome,
+    email: u.email,
+    cpf: u.cpf,
+    telefone: u.telefone,
+    cargo: u.cargo_nome,
+    cargoId: u.cargo_id,
+    criadoEm: u.created_at || u.criado_em,
+  };
+}
+
+// POST /api/auth/login
+async function login(req, res, next) {
+  try {
+    const { email, senha } = req.body || {};
+    if (!email || !senha) {
+      return res.status(400).json({ erro: 'Informe e-mail e senha' });
+    }
+
+    const [rows] = await db.execute(
+      `SELECT u.*, c.nome AS cargo_nome
+         FROM usuarios u JOIN cargos c ON c.id = u.cargo_id
+        WHERE u.email = ?`,
+      [email]
+    );
+    const user = rows[0];
+
+    // mensagem genérica sempre (anti-enumeração)
+    if (!user || !user.ativo) {
+      await registrarAtividade(null, 'LOGIN_FALHOU', email, req.ip);
+      return res.status(401).json({ erro: 'E-mail ou senha inválidos' });
+    }
+
+    const ok = await bcrypt.compare(senha, user.senha_hash);
+    if (!ok) {
+      await registrarAtividade(user.id, 'LOGIN_FALHOU', null, req.ip);
+      return res.status(401).json({ erro: 'E-mail ou senha inválidos' });
+    }
+
+    const token = gerarToken(user);
+    res.cookie('token', token, COOKIE_OPTS);
+    await registrarAtividade(user.id, 'LOGIN', null, req.ip);
+    return res.json({ usuario: sanitizar(user) });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+// POST /api/auth/logout
+async function logout(req, res, next) {
+  try {
+    if (req.user) await registrarAtividade(req.user.id, 'LOGOUT', null, req.ip);
+    res.clearCookie('token', COOKIE_OPTS);
+    return res.json({ ok: true });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+// GET /api/auth/me — dados do usuário logado
+async function me(req, res, next) {
+  try {
+    const [rows] = await db.execute(
+      `SELECT u.*, c.nome AS cargo_nome
+         FROM usuarios u JOIN cargos c ON c.id = u.cargo_id
+        WHERE u.id = ?`,
+      [req.user.id]
+    );
+    if (!rows[0]) return res.status(401).json({ erro: 'Sessão inválida' });
+    return res.json({ usuario: sanitizar(rows[0]) });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+module.exports = { login, logout, me, registrarAtividade };
