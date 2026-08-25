@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, CheckSquare, Users, BarChart3,
-  Settings, ShieldCheck, Package, Target, Clock,
+  Settings, ShieldCheck, Package, Target, Clock, Banknote,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { pode } from '../../utils/permissions';
@@ -26,7 +26,10 @@ export default function Sidebar() {
         <NavLink to="/usuarios" className={item}><Users size={17}/> Usuários</NavLink>
       )}
       {can('relatorios.ver') && (
-        <NavLink to="/relatorios" className={item}><BarChart3 size={17}/> Relatórios</NavLink>
+        <>
+          <NavLink to="/salarios" className={item}><Banknote size={17}/> Salários</NavLink>
+          <NavLink to="/relatorios" className={item}><BarChart3 size={17}/> Relatórios</NavLink>
+        </>
       )}
 
       {can('admin.configuracoes') && (

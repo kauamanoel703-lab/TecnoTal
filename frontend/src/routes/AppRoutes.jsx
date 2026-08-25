@@ -14,6 +14,7 @@ import CargosPermissoes from '../pages/admin/CargosPermissoes';
 import Produtos from '../pages/business/Produtos';
 import Metas from '../pages/business/Metas';
 import Ponto from '../pages/business/Ponto';
+import Salarios from '../pages/business/Salarios';
 import { IntranetLayout } from '../layouts/IntranetLayout';
 
 export default function AppRoutes() {
@@ -31,6 +32,14 @@ export default function AppRoutes() {
           <Route path="/produtos" element={<Produtos />} />
           <Route path="/metas" element={<Metas />} />
           <Route path="/ponto" element={<Ponto />} />
+          <Route
+            path="/salarios"
+            element={
+              <RoleRoute permissao="relatorios.ver">
+                <Salarios />
+              </RoleRoute>
+            }
+          />
           <Route
             path="/aprovacoes"
             element={

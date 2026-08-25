@@ -11,6 +11,7 @@ const reportRoutes = require('./routes/reportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const notificacaoRoutes = require('./routes/notificacaoRoutes');
 const businessRoutes = require('./routes/businessRoutes');
+const salarioRoutes = require('./routes/salarioRoutes');
 const exportRoutes = require('./routes/exportRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
@@ -44,6 +45,7 @@ app.use('/api/notifications', notificacaoRoutes);
 app.use(anexoDownload);
 app.use('/api/reports', exportRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/salarios', salarioRoutes);
 
 // 404 JSON
 app.use((req, res) => res.status(404).json({ erro: 'Rota não encontrada' }));
