@@ -18,3 +18,6 @@ backend/dist/
 Thumbs.db
 .vscode/
 .idea/
+
+# Anexos privados (nunca no git)
+uploads_privados/
