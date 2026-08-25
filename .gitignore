@@ -1,0 +1,20 @@
+# Dependências
+node_modules/
+
+# Ambiente e segredos
+.env
+.env.local
+*.env.txt
+
+# Builds
+frontend/dist/
+backend/dist/
+
+# Logs
+*.log
+
+# Sistema/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
