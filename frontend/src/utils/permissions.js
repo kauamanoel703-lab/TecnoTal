@@ -13,6 +13,9 @@ export const PERMISSOES = {
   USUARIO: ['dashboard.ver', 'perfil.editar_proprio', 'solicitacoes.criar_proprias'],
 };
 
+// Rotas do menu por permissão (usado pelo Sidebar/MobileMenu)
+export const MENU_ADMIN = ['admin.configuracoes', 'admin.cargos_permissoes'];
+
 export function pode(cargo, permissao) {
   const lista = PERMISSOES[cargo] || [];
   return lista.includes('*') || lista.includes(permissao);

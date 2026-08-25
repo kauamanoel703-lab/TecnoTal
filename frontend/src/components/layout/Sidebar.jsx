@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, CheckSquare, Users, BarChart3,
+  Settings, ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { pode } from '../../utils/permissions';
@@ -23,6 +24,18 @@ export default function Sidebar() {
       )}
       {can('relatorios.ver') && (
         <NavLink to="/relatorios" className={item}><BarChart3 size={17}/> Relatórios</NavLink>
+      )}
+
+      {can('admin.configuracoes') && (
+        <>
+          <div style={{ margin: '14px 12px 6px', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.08em', color: '#64748b' }}>Administração</div>
+          {can('admin.configuracoes') && (
+            <NavLink to="/admin/configuracoes" className={item}><Settings size={17}/> Configurações</NavLink>
+          )}
+          {can('admin.cargos_permissoes') && (
+            <NavLink to="/admin/cargos" className={item}><ShieldCheck size={17}/> Cargos e Permissões</NavLink>
+          )}
+        </>
       )}
     </aside>
   );

@@ -1,18 +1,24 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { PrivateRoute, RoleRoute } from './PrivateRoute';
 import Login from '../pages/auth/Login';
+import RecuperarSenha from '../pages/auth/RecuperarSenha';
+import RedefinirSenha from '../pages/auth/RedefinirSenha';
 import Dashboard from '../pages/dashboard/Dashboard';
 import MeuPerfil from '../pages/perfil/MeuPerfil';
 import MinhasSolicitacoes from '../pages/solicitacoes/MinhasSolicitacoes';
 import AprovacaoSolicitacoes from '../pages/solicitacoes/AprovacaoSolicitacoes';
 import Usuarios from '../pages/usuarios/Usuarios';
 import Relatorios from '../pages/relatorios/Relatorios';
+import Configuracoes from '../pages/admin/Configuracoes';
+import CargosPermissoes from '../pages/admin/CargosPermissoes';
 import { IntranetLayout } from '../layouts/IntranetLayout';
 
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/recuperar" element={<RecuperarSenha />} />
+      <Route path="/redefinir" element={<RedefinirSenha />} />
 
       <Route element={<PrivateRoute />}>
         <Route element={<IntranetLayout />}>
@@ -40,6 +46,22 @@ export default function AppRoutes() {
             element={
               <RoleRoute permissao="relatorios.ver">
                 <Relatorios />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/admin/configuracoes"
+            element={
+              <RoleRoute permissao="admin.configuracoes">
+                <Configuracoes />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/admin/cargos"
+            element={
+              <RoleRoute permissao="admin.cargos_permissoes">
+                <CargosPermissoes />
               </RoleRoute>
             }
           />

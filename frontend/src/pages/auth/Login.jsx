@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -72,6 +73,7 @@ export default function Login() {
             {enviando ? 'Entrando…' : 'ENTRAR'}
           </motion.button>
         </form>
+        <Link to="/recuperar" className="auth-link">Esqueci a senha</Link>
       </motion.div>
     </div>
   );

@@ -14,7 +14,7 @@ export default function Header({ onMenu }) {
   return (
     <header className="topbar">
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button className="btn ghost" style={{ padding: '8px 10px', display: 'none' }} onClick={onMenu} id="btn-menu-mobile">☰</button>
+        <button className="btn ghost" style={{ padding: '8px 10px' }} onClick={onMenu} id="btn-menu-mobile">☰</button>
         <span className="gradient-text" style={{ fontWeight: 700, fontSize: 16 }}>Intranet TecnoTal</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>

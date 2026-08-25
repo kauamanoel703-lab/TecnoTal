@@ -4,18 +4,13 @@ import { userService } from '../../services/userService';
 import { maskTelefone } from '../../utils/masks';
 
 export default function MeuPerfil() {
-  const { usuario, refresh } = useAuthSafe();
+  const { usuario } = useAuth();
   const [nome, setNome] = useState(usuario?.nome || '');
   const [telefone, setTelefone] = useState(usuario?.telefone || '');
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [msg, setMsg] = useState(null);
   const [erro, setErro] = useState('');
-
-  // helper para evitar import circular
-  function useAuthSafe() {
-    return useAuth();
-  }
 
   async function salvar(e) {
     e.preventDefault();
@@ -29,7 +24,6 @@ export default function MeuPerfil() {
       await userService.editarPerfil(payload);
       setMsg('Perfil atualizado com sucesso');
       setSenhaAtual(''); setNovaSenha('');
-      if (refresh) await refresh();
     } catch (err) {
       setErro(err.response?.data?.erro || 'Erro ao salvar');
     }

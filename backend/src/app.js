@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 JSON
 app.use((req, res) => res.status(404).json({ erro: 'Rota não encontrada' }));

@@ -16,4 +16,9 @@ authRoutes.post('/login', loginLimiter, controller.login);
 authRoutes.post('/logout', authRequired, controller.logout);
 authRoutes.get('/me', authRequired, controller.me);
 
+// Recuperação de senha (sem rate limit do login, mas com o global de /api)
+const recuperacao = require('../controllers/recuperacaoController');
+authRoutes.post('/recuperar', recuperacao.solicitarRecuperacao);
+authRoutes.post('/redefinir', recuperacao.redefinirSenha);
+
 module.exports = authRoutes;
