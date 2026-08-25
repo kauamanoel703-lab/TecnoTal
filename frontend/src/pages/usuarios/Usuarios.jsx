@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { userService } from '../../services/userService';
 import { maskCpf, maskTelefone } from '../../utils/masks';
+import EditarUsuarioModal from '../../components/users/EditarUsuarioModal';
 
 const CARGOS = [{ id: 1, nome: 'ADMIN' }, { id: 2, nome: 'GESTOR' }, { id: 3, nome: 'USUARIO' }];
 
@@ -10,8 +11,30 @@ export default function Usuarios() {
   const [form, setForm] = useState({ nome: '', email: '', cpf: '', telefone: '', senha: '', cargoId: 3 });
   const [msg, setMsg] = useState('');
 
+  // filtros
+  const [busca, setBusca] = useState('');
+  const [filtroCargo, setFiltroCargo] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
+
+  // edição
+  const [editando, setEditando] = useState(null);
+
   const carregar = () => userService.listar().then(setLista).catch(() => setErro('Erro ao carregar'));
   useEffect(() => { carregar(); }, []);
+
+  // busca por nome/email/CPF + filtros de cargo e status (no cliente — volume é pequeno)
+  const filtrada = useMemo(() => {
+    if (!lista) return [];
+    const q = busca.trim().toLowerCase();
+    return lista.filter((u) => {
+      const bateBusca = !q || u.nome.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.cpf || '').includes(q.replace(/\D/g, ''));
+      const bateCargo = !filtroCargo || String(u.cargoId || u.cargo_id) === filtroCargo;
+      const bateStatus = !filtroStatus
+        || (filtroStatus === 'ativo' && u.ativo)
+        || (filtroStatus === 'inativo' && !u.ativo);
+      return bateBusca && bateCargo && bateStatus;
+    });
+  }, [lista, busca, filtroCargo, filtroStatus]);
 
   async function criar(e) {
     e.preventDefault();
@@ -69,28 +92,61 @@ export default function Usuarios() {
         </div>
 
         <div className="card table-wrap">
-          <h3 style={{ marginBottom: 14, fontSize: 15 }}>Todos os usuários</h3>
+          <h3 style={{ marginBottom: 12, fontSize: 15 }}>Usuários ({filtrada.length}{lista ? ` de ${lista.length}` : ''})</h3>
+
+          {/* Filtros */}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+            <input
+              className="input" style={{ flex: 2, minWidth: 140, padding: '9px 12px' }}
+              placeholder="🔍 Buscar nome, e-mail ou CPF…"
+              value={busca} onChange={(e) => setBusca(e.target.value)}
+            />
+            <select className="input" style={{ flex: 1, minWidth: 100, padding: '9px 12px' }} value={filtroCargo} onChange={(e) => setFiltroCargo(e.target.value)}>
+              <option value="">Todos cargos</option>
+              {CARGOS.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+            </select>
+            <select className="input" style={{ flex: 1, minWidth: 100, padding: '9px 12px' }} value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+              <option value="">Todos status</option>
+              <option value="ativo">Ativos</option>
+              <option value="inativo">Inativos</option>
+            </select>
+          </div>
+
           {!lista ? <div className="spinner" /> : (
             <table className="table">
               <thead><tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Ações</th></tr></thead>
               <tbody>
-                {lista.map((u) => (
+                {filtrada.map((u) => (
                   <tr key={u.id}>
                     <td>{u.nome}<br /><small style={{ color: 'var(--muted)' }}>{u.email}</small></td>
                     <td>{u.cargo}</td>
                     <td>{u.ativo ? 'Ativo' : 'Inativo'}</td>
                     <td>
-                      <button className="btn ghost" style={{ padding: '5px 10px', fontSize: 12 }} onClick={() => alternarAtivo(u)}>
-                        {u.ativo ? 'Desativar' : 'Ativar'}
-                      </button>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button className="btn ghost" style={{ padding: '5px 10px', fontSize: 12 }} onClick={() => setEditando(u)}>Editar</button>
+                        <button className="btn ghost" style={{ padding: '5px 10px', fontSize: 12 }} onClick={() => alternarAtivo(u)}>
+                          {u.ativo ? 'Desativar' : 'Ativar'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
+                {filtrada.length === 0 && (
+                  <tr><td colSpan={4} style={{ color: 'var(--muted)' }}>Nenhum usuário encontrado com esses filtros.</td></tr>
+                )}
               </tbody>
             </table>
           )}
         </div>
       </div>
+
+      {editando && (
+        <EditarUsuarioModal
+          usuario={editando}
+          onClose={() => setEditando(null)}
+          onSalvo={() => { setEditando(null); setMsg('Usuário atualizado'); carregar(); }}
+        />
+      )}
     </>
   );
 }

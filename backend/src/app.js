@@ -9,6 +9,7 @@ const userRoutes = require('./routes/userRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const notificacaoRoutes = require('./routes/notificacaoRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
 const app = express();
@@ -16,7 +17,7 @@ const app = express();
 // Segurança
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: [/^http:\/\/localhost:\d+$/, /^http:\/\/127\.0\.0\.1:\d+$/],
   credentials: true,
 }));
 app.use(express.json({ limit: '1mb' }));
@@ -37,6 +38,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificacaoRoutes);
 
 // 404 JSON
 app.use((req, res) => res.status(404).json({ erro: 'Rota não encontrada' }));

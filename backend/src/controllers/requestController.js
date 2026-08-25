@@ -1,5 +1,6 @@
 const db = require('../database/connection');
 const { registrarAtividade } = require('./authController');
+const { notificar, notificarComPermissao } = require('./notificacaoController');
 
 async function listarMinhas(req, res, next) {
   try {
@@ -39,6 +40,12 @@ async function criar(req, res, next) {
       [req.user.id, titulo.trim(), descricao || null]
     );
     await registrarAtividade(req.user.id, 'CRIAR_SOLICITACAO', `id=${r.insertId}`, req.ip);
+    // avisa todos os aprovadores que há uma solicitação pendente
+    notificarComPermissao(
+      'solicitacoes.aprovar',
+      'Nova solicitação',
+      `${req.user.nome} abriu "${titulo.trim()}"`
+    ).catch((e) => console.error('[notif]', e.message));
     return res.status(201).json({ ok: true, id: r.insertId });
   } catch (err) { next(err); }
 }
@@ -52,7 +59,7 @@ async function decidir(req, res, next) {
     }
     const statusId = acao === 'aprovar' ? 2 : 3;
 
-    const [rows] = await db.execute('SELECT id, status_id FROM solicitacoes WHERE id = ?', [id]);
+    const [rows] = await db.execute('SELECT id, usuario_id, titulo, status_id FROM solicitacoes WHERE id = ?', [id]);
     if (!rows[0]) return res.status(404).json({ erro: 'Solicitação não encontrada' });
     if (rows[0].status_id !== 1) return res.status(409).json({ erro: 'Solicitação já decidida' });
 
@@ -63,6 +70,14 @@ async function decidir(req, res, next) {
       [statusId, req.user.id, observacao || null, id]
     );
     await registrarAtividade(req.user.id, acao === 'aprovar' ? 'APROVAR_SOLICITACAO' : 'REJEITAR_SOLICITACAO', `id=${id}`, req.ip);
+    // avisa o criador da decisão (não notifica se ele mesmo decidiu)
+    if (rows[0].usuario_id !== req.user.id) {
+      notificar(
+        rows[0].usuario_id,
+        `Solicitação ${acao === 'aprovar' ? 'aprovada' : 'rejeitada'}`,
+        `"${rows[0].titulo}" — ${observacao || 'sem observação'}`
+      ).catch((e) => console.error('[notif]', e.message));
+    }
     return res.json({ ok: true });
   } catch (err) { next(err); }
 }

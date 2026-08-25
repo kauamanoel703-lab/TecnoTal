@@ -40,7 +40,9 @@ function sanitizar(u) {
 // POST /api/auth/login
 async function login(req, res, next) {
   try {
-    const { email, senha } = req.body || {};
+    const rawEmail = String(req.body?.email ?? '');
+    const senha = typeof req.body?.senha === 'string' ? req.body.senha : '';
+    const email = rawEmail.trim().toLowerCase();
     if (!email || !senha) {
       return res.status(400).json({ erro: 'Informe e-mail e senha' });
     }

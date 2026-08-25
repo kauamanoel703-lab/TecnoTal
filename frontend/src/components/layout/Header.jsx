@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { LogOut, Menu, User } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import NotificacaoSino from './NotificacaoSino';
 
 export default function Header({ onMenu }) {
   const { usuario, logout } = useAuth();
@@ -18,6 +19,7 @@ export default function Header({ onMenu }) {
         <span className="gradient-text" style={{ fontWeight: 700, fontSize: 16 }}>Intranet TecnoTal</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <NotificacaoSino />
         <span
           className="glow-hover"
           style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}
