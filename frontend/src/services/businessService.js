@@ -25,3 +25,10 @@ export const salarioService = {
   historico: () => api.get('/salarios/historico').then((r) => r.data),
   meu: () => api.get('/salarios/meu').then((r) => r.data),
 };
+
+export const financeiroService = {
+  resumo: () => api.get('/business/financeiro/resumo').then((r) => r.data),
+  ultimasVendas: () => api.get('/business/financeiro/ultimas-vendas').then((r) => r.data.vendas),
+  registrarVenda: (produtoId, quantidade, precoUnitario, observacao) =>
+    api.post('/business/vendas', { produtoId, quantidade, precoUnitario, observacao }),
+};

@@ -15,6 +15,7 @@ import Produtos from '../pages/business/Produtos';
 import Metas from '../pages/business/Metas';
 import Ponto from '../pages/business/Ponto';
 import Salarios from '../pages/business/Salarios';
+import Financeiro from '../pages/business/Financeiro';
 import { IntranetLayout } from '../layouts/IntranetLayout';
 
 export default function AppRoutes() {
@@ -37,6 +38,14 @@ export default function AppRoutes() {
             element={
               <RoleRoute permissao="relatorios.ver">
                 <Salarios />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/financeiro"
+            element={
+              <RoleRoute permissao="relatorios.ver">
+                <Financeiro />
               </RoleRoute>
             }
           />

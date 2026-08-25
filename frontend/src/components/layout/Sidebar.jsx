@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, CheckSquare, Users, BarChart3,
-  Settings, ShieldCheck, Package, Target, Clock, Banknote,
+  Settings, ShieldCheck, Package, Target, Clock, Banknote, TrendingUp,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { pode } from '../../utils/permissions';
@@ -27,6 +27,7 @@ export default function Sidebar() {
       )}
       {can('relatorios.ver') && (
         <>
+          <NavLink to="/financeiro" className={item}><TrendingUp size={17}/> Financeiro</NavLink>
           <NavLink to="/salarios" className={item}><Banknote size={17}/> Salários</NavLink>
           <NavLink to="/relatorios" className={item}><BarChart3 size={17}/> Relatórios</NavLink>
         </>
