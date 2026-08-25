@@ -14,5 +14,5 @@ export const businessService = {
   // ponto
   baterPonto: () => api.post('/business/ponto/bater').then((r) => r.data),
   meuPonto: () => api.get('/business/ponto/meu').then((r) => r.data.registros),
-  pontoEquipe: (data) => api.get('/business/ponto/equipe', { params: { data } }).then((r) => r.data),
+  pontoEquipe: (data) => api.get('/business/ponto/equipe', { params: { data } }).then((r) => r.data.funcionarios),
 };
