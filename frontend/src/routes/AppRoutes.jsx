@@ -11,6 +11,9 @@ import Usuarios from '../pages/usuarios/Usuarios';
 import Relatorios from '../pages/relatorios/Relatorios';
 import Configuracoes from '../pages/admin/Configuracoes';
 import CargosPermissoes from '../pages/admin/CargosPermissoes';
+import Produtos from '../pages/business/Produtos';
+import Metas from '../pages/business/Metas';
+import Ponto from '../pages/business/Ponto';
 import { IntranetLayout } from '../layouts/IntranetLayout';
 
 export default function AppRoutes() {
@@ -25,6 +28,9 @@ export default function AppRoutes() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/perfil" element={<MeuPerfil />} />
           <Route path="/solicitacoes" element={<MinhasSolicitacoes />} />
+          <Route path="/produtos" element={<Produtos />} />
+          <Route path="/metas" element={<Metas />} />
+          <Route path="/ponto" element={<Ponto />} />
           <Route
             path="/aprovacoes"
             element={

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, CheckSquare, Users, BarChart3,
-  Settings, ShieldCheck,
+  Settings, ShieldCheck, Package, Target, Clock,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { pode } from '../../utils/permissions';
@@ -15,6 +15,9 @@ export default function Sidebar() {
     <aside className="sidebar">
       <div className="brand gradient-text">TecnoTal</div>
       <NavLink to="/" end className={item}><LayoutDashboard size={17}/> Dashboard</NavLink>
+      <NavLink to="/ponto" className={item}><Clock size={17}/> Ponto</NavLink>
+      <NavLink to="/produtos" className={item}><Package size={17}/> Produtos</NavLink>
+      <NavLink to="/metas" className={item}><Target size={17}/> Metas</NavLink>
       <NavLink to="/solicitacoes" className={item}><ClipboardList size={17}/> Minhas Solicitações</NavLink>
       {can('solicitacoes.aprovar') && (
         <NavLink to="/aprovacoes" className={item}><CheckSquare size={17}/> Aprovações</NavLink>

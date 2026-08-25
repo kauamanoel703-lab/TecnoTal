@@ -10,6 +10,7 @@ const { router: requestRoutes, anexoDownload } = require('./routes/requestRoutes
 const reportRoutes = require('./routes/reportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const notificacaoRoutes = require('./routes/notificacaoRoutes');
+const businessRoutes = require('./routes/businessRoutes');
 const exportRoutes = require('./routes/exportRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
@@ -41,7 +42,8 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificacaoRoutes);
 app.use(anexoDownload);
-app.use('/api/reports', exportRoutes); // rotas .csv (antes do catch-all de /api 404? não, express casa por ordem — ok pois são caminhos distintos)
+app.use('/api/reports', exportRoutes);
+app.use('/api/business', businessRoutes);
 
 // 404 JSON
 app.use((req, res) => res.status(404).json({ erro: 'Rota não encontrada' }));
