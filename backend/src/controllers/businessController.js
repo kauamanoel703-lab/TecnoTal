@@ -200,7 +200,7 @@ async function baterPonto(req, res, next) {
 async function meuPonto(req, res, next) {
   try {
     const [rows] = await db.execute(
-      `SELECT data_dia AS dia, TIME_FORMAT(hora_entrada,'%H:%i') AS entrada,
+      `SELECT CAST(data_dia AS CHAR) AS dia, TIME_FORMAT(hora_entrada,'%H:%i') AS entrada,
               TIME_FORMAT(hora_saida,'%H:%i') AS saida, observacao
          FROM registros_ponto WHERE usuario_id = ?
         ORDER BY data_dia DESC LIMIT 30`,
