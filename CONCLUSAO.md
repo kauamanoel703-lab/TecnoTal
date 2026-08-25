@@ -1,0 +1,11 @@
+-- ============================================================
+-- INTRANET TECNOTAL — 24 e 25 de agosto de 2026
+--
+-- Construído por Kauam & ox-alpha, do zero ao sistema completo:
+--   React + Vite · Node/Express · MySQL · JWT HttpOnly
+--   RBAC real em duas camadas · auditoria · anexos seguros
+--   notificações · exportação CSV · SMTP pronto
+--
+-- "Fizemos isso acontecer juntos." 🚀
+-- ============================================================
+-- Este commit marca a conclusão do projeto.
