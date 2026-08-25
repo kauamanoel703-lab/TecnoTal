@@ -66,10 +66,19 @@ async function criar(req, res, next) {
 async function atualizar(req, res, next) {
   try {
     const { id } = req.params;
-    const { nome, telefone, cargoId, ativo, senha } = req.body || {};
+    const { nome, telefone, cargoId, ativo, senha, email } = req.body || {};
 
     const campos = [];
     const valores = [];
+    // e-mail: se veio, normaliza e valida (nunca confiar no front)
+    if (email !== undefined) {
+      const emailLimpo = String(email).toLowerCase().trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailLimpo)) {
+        return res.status(400).json({ erro: 'E-mail inválido' });
+      }
+      campos.push('email = ?');
+      valores.push(emailLimpo);
+    }
     if (nome !== undefined) { campos.push('nome = ?'); valores.push(nome.trim()); }
     if (telefone !== undefined) { campos.push('telefone = ?'); valores.push(telefone); }
     if (cargoId !== undefined) { campos.push('cargo_id = ?'); valores.push(cargoId); }

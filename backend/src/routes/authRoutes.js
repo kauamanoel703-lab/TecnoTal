@@ -6,7 +6,7 @@ const authRequired = require('../middlewares/authMiddleware');
 // Login: 5 tentativas / 15 min por IP
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: Number(process.env.LOGIN_MAX_TENTATIVAS) || 20,
+  limit: Number(process.env.LOGIN_IP_MAX) || 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: { erro: 'Muitas tentativas. Aguarde alguns minutos.' },

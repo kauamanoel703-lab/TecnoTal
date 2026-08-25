@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../database/connection');
+const bloqueio = require('../middlewares/bloqueioLogin');
 
 const COOKIE_OPTS = {
   httpOnly: true,
@@ -47,6 +48,13 @@ async function login(req, res, next) {
       return res.status(400).json({ erro: 'Informe e-mail e senha' });
     }
 
+    // bloqueio por CONTA (independe de IP/rede)
+    const segRestantes = bloqueio.verificar(email);
+    if (segRestantes) {
+      const min = Math.ceil(segRestantes / 60);
+      return res.status(429).json({ erro: `Conta temporariamente bloqueada. Tente em ${min} min.` });
+    }
+
     const [rows] = await db.execute(
       `SELECT u.*, c.nome AS cargo_nome
          FROM usuarios u JOIN cargos c ON c.id = u.cargo_id
@@ -57,16 +65,19 @@ async function login(req, res, next) {
 
     // mensagem genérica sempre (anti-enumeração)
     if (!user || !user.ativo) {
+      bloqueio.registrarFalha(email);
       await registrarAtividade(null, 'LOGIN_FALHOU', email, req.ip);
       return res.status(401).json({ erro: 'E-mail ou senha inválidos' });
     }
 
     const ok = await bcrypt.compare(senha, user.senha_hash);
     if (!ok) {
+      bloqueio.registrarFalha(email);
       await registrarAtividade(user.id, 'LOGIN_FALHOU', null, req.ip);
       return res.status(401).json({ erro: 'E-mail ou senha inválidos' });
     }
 
+    bloqueio.limpar(email);
     const token = gerarToken(user);
     res.cookie('token', token, COOKIE_OPTS);
     await registrarAtividade(user.id, 'LOGIN', null, req.ip);
