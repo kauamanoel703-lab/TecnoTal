@@ -17,6 +17,7 @@ import Ponto from '../pages/business/Ponto';
 import Salarios from '../pages/business/Salarios';
 import Financeiro from '../pages/business/Financeiro';
 import Chamados from '../pages/business/Chamados';
+import NaoEncontrada from '../pages/NaoEncontrada';
 import Administrativo from '../pages/business/Administrativo';
 import PainelTI from '../pages/business/PainelTI';
 import { IntranetLayout } from '../layouts/IntranetLayout';
@@ -112,7 +113,7 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NaoEncontrada />} />
     </Routes>
   );
 }

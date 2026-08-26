@@ -43,7 +43,10 @@ export default function Login() {
         transition={{ duration: .5, ease: 'easeOut' }}
       >
         <div className="auth-logo">
-          <span className="gradient-text">TecnoTal</span>
+          <img src="/logo-tecnotal.jpg" alt="TecnoTal" style={{
+            maxWidth: 260, width: '100%', borderRadius: 12,
+            boxShadow: '0 8px 30px rgba(56,189,248,.15)', marginBottom: 4,
+          }} />
         </div>
         <p className="auth-sub">Acesso à Intranet</p>
 

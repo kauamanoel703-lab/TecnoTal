@@ -21,7 +21,10 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="brand gradient-text">TecnoTal</div>
+      <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '6px 10px 16px' }}>
+        <img src="/logo-tecnotal.jpg" alt="" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }} />
+        <span className="gradient-text" style={{ fontSize: 18, fontWeight: 800 }}>TecnoTal</span>
+      </div>
 
       <Secao titulo="Geral">
         <NavLink to="/" end className={item}><LayoutDashboard size={17}/> Dashboard</NavLink>
