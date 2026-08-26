@@ -19,8 +19,8 @@ export const businessService = {
 
 export const salarioService = {
   listar: () => api.get('/salarios').then((r) => r.data),
-  definir: (usuarioId, valorMensal, diaPagamento) =>
-    api.put(`/salarios/${usuarioId}`, { valorMensal, diaPagamento }),
+  definir: (usuarioId, valorMensal, diaPagamento, nivel, departamento) =>
+    api.put(`/salarios/${usuarioId}`, { valorMensal, diaPagamento, nivel, departamento }),
   pagar: (usuarioId, opts = {}) => api.post(`/salarios/${usuarioId}/pagar`, opts),
   historico: () => api.get('/salarios/historico').then((r) => r.data),
   meu: () => api.get('/salarios/meu').then((r) => r.data),
@@ -41,4 +41,33 @@ export const chamadoService = {
   meusSetores: () => api.get('/chamados/meus-setores').then((r) => r.data.setores),
   assumir: (id) => api.post(`/chamados/${id}/assumir`),
   resolver: (id, resposta) => api.post(`/chamados/${id}/resolver`, { resposta }),
+};
+
+export const setoresService = {
+  // documentos (administrativo)
+  listarDocs: () => api.get('/setores/docs').then((r) => r.data.documentos),
+  enviarDocs: (files, titulo, categoria, visivelPara) => {
+    const fd = new FormData();
+    files.forEach((f) => fd.append('arquivos', f));
+    if (titulo) fd.append('titulo', titulo);
+    fd.append('categoria', categoria);
+    fd.append('visivelPara', visivelPara);
+    return api.post('/setores/docs', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
+  baixarDoc: async (id, nome) => {
+    const resp = await api.get(`/setores/docs/${id}/download`, { responseType: 'blob' });
+    const url = URL.createObjectURL(resp.data);
+    const a = document.createElement('a');
+    a.href = url; a.download = nome; a.click();
+    URL.revokeObjectURL(url);
+  },
+  excluirDoc: (id) => api.delete(`/setores/docs/${id}`),
+  // T.I.
+  inventario: () => api.get('/setores/ti/inventario').then((r) => r.data.equipamentos),
+  criarEquipamento: (p) => api.post('/setores/ti/inventario', p),
+  editarEquipamento: (id, p) => api.put(`/setores/ti/inventario/${id}`, p),
+  servidores: () => api.get('/setores/ti/servidores').then((r) => r.data.servidores),
+  criarServidor: (p) => api.post('/setores/ti/servidores', p),
+  statusServidor: (id, status) => api.patch(`/setores/ti/servidores/${id}/status`, { status }),
+  saude: () => api.get('/setores/ti/saude').then((r) => r.data),
 };

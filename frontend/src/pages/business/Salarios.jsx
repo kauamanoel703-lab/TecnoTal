@@ -63,6 +63,14 @@ function FolhaDaEquipe() {
   const [editando, setEditando] = useState(null); // usuarioId
   const [valorEdit, setValorEdit] = useState('');
   const [diaEdit, setDiaEdit] = useState(5);
+  const [nivelEdit, setNivelEdit] = useState('PLENO');
+  const [deptoEdit, setDeptoEdit] = useState('GERAL');
+
+  const NIVEIS = ['JUNIOR', 'PLENO', 'SENIOR', 'COORDENACAO'];
+  const DEPTOS = ['GERAL', 'RH', 'TI', 'ADMINISTRATIVO', 'VENDAS', 'OPERACOES'];
+
+  // filtro por departamento
+  const [filtroDepto, setFiltroDepto] = useState('');
 
   const carregar = () => {
     salarioService.listar().then(setFolha).catch(() => setErro('Erro ao carregar folha'));
@@ -73,7 +81,8 @@ function FolhaDaEquipe() {
   async function salvarSalario(usuarioId) {
     setErro(''); setMsg('');
     try {
-      await salarioService.definir(usuarioId, Number(valorEdit), Number(diaEdit));
+      await salarioService.definir(usuarioId, valorEdit === '' ? undefined : Number(valorEdit), Number(diaEdit), nivelEdit, deptoEdit);
+      // nível e departamento via segunda chamada (mesmo endpoint aceita)
       setMsg('Salário atualizado');
       setEditando(null);
       carregar();
@@ -128,14 +137,24 @@ function FolhaDaEquipe() {
       {erro && <div className="alert-error" style={{ marginBottom: 10 }}>{erro}</div>}
 
       <div className="card table-wrap" style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 12 }}>
+          <h3 style={{ fontSize: 15 }}>Funcionários</h3>
+          <select className="input" style={{ padding: '7px 12px', fontSize: 13 }} value={filtroDepto} onChange={(e) => setFiltroDepto(e.target.value)}>
+            <option value="">Todas as áreas</option>
+            {DEPTOS.map((d) => <option key={d} value={d}>{d}</option>)}
+          </select>
+        </div>
         {!folha ? <div className="spinner" /> : (
           <table className="table">
-            <thead><tr><th>Funcionário</th><th>Cargo</th><th>Salário</th><th>Dia</th><th>Status do mês</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Funcionário</th><th>Área/Cargo</th><th>Nível</th><th>Salário</th><th>Dia pag.</th><th>Nível/Área (editar)</th><th>Status do mês</th><th>Ações</th></tr></thead>
             <tbody>
-              {folha.funcionarios.map((f) => (
+              {folha.funcionarios
+                .filter((f2) => !filtroDepto || (f2.departamento || 'GERAL') === filtroDepto)
+                .map((f) => (
                 <tr key={f.usuarioId}>
                   <td>{f.nome}<br /><small style={{ color: 'var(--muted)' }}>{f.email}</small></td>
-                  <td>{f.cargo}</td>
+                  <td><span className="badge pendente">{f.departamento || 'GERAL'}</span><br /><small style={{ color: 'var(--muted)' }}>{f.cargo}</small></td>
+                  <td><b style={{ fontSize: 12 }}>{f.nivel || '—'}</b></td>
                   <td>
                     {editando === f.usuarioId ? (
                       <input type="number" step="0.01" min="0" className="input" style={{ padding: '6px 10px', width: 110 }}
@@ -149,6 +168,20 @@ function FolhaDaEquipe() {
                       <input type="number" min="1" max="28" className="input" style={{ padding: '6px 10px', width: 64 }}
                         value={diaEdit} onChange={(e) => setDiaEdit(e.target.value)} />
                     ) : f.diaPagamento}
+                  </td>
+                  <td>
+                    {editando === f.usuarioId ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <select className="input" style={{ padding: '5px 8px', fontSize: 11 }} value={nivelEdit} onChange={(e) => setNivelEdit(e.target.value)}>
+                          {NIVEIS.map((n) => <option key={n}>{n}</option>)}
+                        </select>
+                        <select className="input" style={{ padding: '5px 8px', fontSize: 11 }} value={deptoEdit} onChange={(e) => setDeptoEdit(e.target.value)}>
+                          {DEPTOS.map((d2) => <option key={d2}>{d2}</option>)}
+                        </select>
+                      </div>
+                    ) : (
+                      f.nivel || '—'
+                    )}
                   </td>
                   <td>
                     {f.pagoEsteMes

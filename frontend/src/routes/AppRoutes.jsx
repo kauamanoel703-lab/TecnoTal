@@ -17,6 +17,8 @@ import Ponto from '../pages/business/Ponto';
 import Salarios from '../pages/business/Salarios';
 import Financeiro from '../pages/business/Financeiro';
 import Chamados from '../pages/business/Chamados';
+import Administrativo from '../pages/business/Administrativo';
+import PainelTI from '../pages/business/PainelTI';
 import { IntranetLayout } from '../layouts/IntranetLayout';
 
 export default function AppRoutes() {
@@ -35,6 +37,22 @@ export default function AppRoutes() {
           <Route path="/metas" element={<Metas />} />
           <Route path="/ponto" element={<Ponto />} />
           <Route path="/chamados" element={<Chamados />} />
+          <Route
+            path="/administrativo"
+            element={
+              <RoleRoute permissao="relatorios.ver">
+                <Administrativo />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/ti"
+            element={
+              <RoleRoute permissao="relatorios.ver">
+                <PainelTI />
+              </RoleRoute>
+            }
+          />
           <Route
             path="/salarios"
             element={
