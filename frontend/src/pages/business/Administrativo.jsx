@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { setoresService } from '../../services/businessService';
 import { FileText, Download, Trash2, Plus, ShoppingCart, Clock, LifeBuoy } from 'lucide-react';
 import { requestService } from '../../services/userService';
+import api from '../../services/api';
 
 const CATEGORIAS = ['Contrato', 'Política', 'Edital', 'Ata', 'Financeiro', 'Outro'];
 
@@ -23,10 +24,8 @@ export default function Administrativo() {
   const carregar = () => {
     setoresService.listarDocs().then(setDocs).catch(() => setErro('Erro ao carregar documentos'));
     requestService.todas().then(setPendentes).catch(() => {});
-    import('../../services/api').then(({ default: api }) =>
-      api.get('/business/financeiro/ultimas-vendas').then((r) => setVendas(r.data.vendas.slice(0, 5))).catch(() => {}));
-    import('../../services/api').then(({ default: api }) =>
-      api.get('/chamados?departamento=ADMINISTRATIVO').then((r) => setChamadosADM(r.data.chamados.filter((c) => c.status !== 'RESOLVIDO'))).catch(() => {}));
+    api.get('/business/financeiro/ultimas-vendas').then((r) => setVendas(r.data.vendas.slice(0, 5))).catch(() => {});
+    api.get('/chamados?departamento=ADMINISTRATIVO').then((r) => setChamadosADM(r.data.chamados.filter((c) => c.status !== 'RESOLVIDO'))).catch(() => {});
   };
   useEffect(() => { carregar(); }, []);
 
